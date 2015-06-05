@@ -1,0 +1,4 @@
+/app/lib
+site-packages
+.*.swp
+*.pyc
