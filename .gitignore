@@ -2,3 +2,5 @@
 site-packages
 .*.swp
 *.pyc
+credentials.conf
+flag.txt
