@@ -1,17 +1,13 @@
 from conf import *
 from urllib2 import urlopen
 from urllib import urlencode
+from suds.client import Client
 
 def omat_lahdot():
-    q = urlencode({
-        "type":"vehicles",
-        "lat1":"60",
-        "lat2":"61",
-        "lng1":"23",
-        "lng2":"26"
-        })
-    response = urlopen(hsl_live_url + "?" + q)
-    dump_response(response)
+    url = kamo_url
+    client = Client(url)
+
+    print client
 
 def vehicles():
     q = urlencode({
