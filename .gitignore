@@ -4,3 +4,7 @@ site-packages
 *.pyc
 credentials.conf
 flag.txt
+bin
+include
+lib64
+.Python
