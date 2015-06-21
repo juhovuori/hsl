@@ -9,3 +9,4 @@ include
 lib64
 .Python
 pip-selfcheck.json
+node_modules
