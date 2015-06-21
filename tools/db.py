@@ -1,34 +1,47 @@
 import psycopg2
 import time
+import conf
+from datetime import datetime
 
 _conn = None
 
 def get_conn():
+    global _conn
     if _conn == None:
-        _conn = psycopg2.connect("d")
+        _conn = psycopg2.connect(
+          database = conf.db_database,
+          host = conf.db_host,
+          user = conf.db_user,
+          password = conf.db_password)
     return _conn
 
 def get_timestamp():
-    return time.time()
+    return datetime.now()
 
 def sql_str(entry, i):
     try:
         return entry[i]
-    except e:
+    except IndexError as e:
+        return None
+    except Exception as e:
         print e
         return None
 
 def sql_real(entry, i):
     try:
         return float(entry[i])
-    except e:
+    except IndexError as e:
+        return None
+    except Exception as e:
         print e
         return None
 
 def sql_int(entry, i):
     try:
         return int(entry[i])
-    except e:
+    except IndexError as e:
+        return None
+    except Exception as e:
         print e
         return None
 
@@ -54,28 +67,24 @@ def sql_dict(entry,t):
 
 def store_batch(entries,t=None):
     if t is None: t = get_timestamp()
+    t_str = str(t)[:19]
+    print '%s: storing %d entries' % (t_str, len(entries))
     for entry in entries:
         store(entry,t)
-
-def sql_type(value):
-    t = type(value)
-    if (t == type('')): return 's'
-    if (t == type(0)): return 'd'
-    if (t == type(1.2)): return 'f'
-    else:
-        print type(value)
-        raise Exception()
 
 def store(entry,t=None):
     if t is None: t = get_timestamp()
     d = sql_dict(entry,t)
-    c = get_conn().cursor()
+    conn = get_conn()
+    cur = conn.cursor()
+    cols = [x for x in d.keys() if d[x] != None]
     try:
-        columns = d.keys().join(",")
-        value_strings = ["\%(%s)%s" % (k,sql_type(d[k])) for k in d.keys()]
-        values = value_strings.join(",")
+        columns = ",".join(cols)
+        value_strings = ["%c(%s)s" % ('%', k) for k in cols]
+        values = ",".join(value_strings)
         tpl = "INSERT INTO vehicles (%s) VALUES (%s)" % (columns, values)
-        cur.execute(tpl, namedict)
+        cur.execute(tpl, d)
+        conn.commit()
 
-    except e:
+    except Exception as e:
         print 'SQL:', e
