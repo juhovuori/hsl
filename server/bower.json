@@ -1,6 +1,9 @@
 {
   "name": "server",
   "version": "0.0.1",
+  "dependencies": {
+    "leaflet": "~0.7.3"
+  },
   "ignore": [
     "**/.*",
     "node_modules",

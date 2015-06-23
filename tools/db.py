@@ -8,39 +8,35 @@ _conn = None
 def get_conn():
     global _conn
     if _conn == None:
-        _conn = psycopg2.connect(
-          database = conf.db_database,
-          host = conf.db_host,
-          user = conf.db_user,
-          password = conf.db_password)
+        _conn = psycopg2.connect(conf.db_connection)
     return _conn
 
 def get_timestamp():
     return datetime.now()
 
 def sql_str(entry, i):
+    if len(entry) <= i:
+        return None
     try:
         return entry[i]
-    except IndexError as e:
-        return None
     except Exception as e:
         print e
         return None
 
 def sql_real(entry, i):
+    if len(entry) <= i or entry[i] == '':
+        return None
     try:
         return float(entry[i])
-    except IndexError as e:
-        return None
     except Exception as e:
         print e
         return None
 
 def sql_int(entry, i):
+    if len(entry) <= i or entry[i] == '':
+        return None
     try:
         return int(entry[i])
-    except IndexError as e:
-        return None
     except Exception as e:
         print e
         return None
