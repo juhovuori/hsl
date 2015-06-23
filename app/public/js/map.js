@@ -1,6 +1,9 @@
 $(document).on('ready', function () {
   "use strict";
 
+  var h = $(window).height();
+  $('#map').height(h-50);
+
   var map = L.map('map').setView([60.175, 24.94], 13);
   var markers = {};
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -13,8 +16,10 @@ $(document).on('ready', function () {
   setInterval(refresh,1000);
   refresh();
 
+  $('#map').height($(window).height()-50);
+
   function refresh() {
-    $.get('/vehicles')
+    $.get('/vehicles_direct')
       .done(placeVehicles)
       .fail( function(err) { console.log(err); });
   }
