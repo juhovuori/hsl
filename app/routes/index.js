@@ -34,30 +34,34 @@ router.get('/vehicles_direct', function(req, res) {
   var url = hsl_live_url + "?type=vehicles&lat1=60&lat2=61&lng1=23&lng2=26";
   request( url, function (error, response, body) {
 
-    var lines = body.split("\n");
-    var lines = lines.slice(0,lines.length-1);
+    if (error) {
+      res.send({error:error});
+    } else if (body) {
+      var lines = body.split("\n");
+      var lines = lines.slice(0,lines.length-1);
 
-    var vehicles = lines.map( function (line) {
+      var vehicles = lines.map( function (line) {
 
-      var cells = line.trim().split(";");
-      return {
-        'vehicle_id': cells[0],
-        'route': cells[1],
-        'lat': parseFloat(cells[2]),
-        'lng': parseFloat(cells[3]),
-        'bearing': parseInt(cells[4]),
-        'direction': parseInt(cells[5]),
-        'previous': parseInt(cells[6]),
-        'current': parseInt(cells[7]),
-        'departure': parseInt(cells[8]),
-        'type': parseInt(cells[9]),
-        'operator': cells[10],
-        'name': cells[11],
-        'speed': parseInt(cells[12]),
-        'acceleration': parseInt(cells[13])
-      };
-    });
-    res.send({vehicles:vehicles});
+        var cells = line.trim().split(";");
+        return {
+          'vehicle_id': cells[0],
+          'route': cells[1],
+          'lat': parseFloat(cells[2]),
+          'lng': parseFloat(cells[3]),
+          'bearing': parseInt(cells[4]),
+          'direction': parseInt(cells[5]),
+          'previous': parseInt(cells[6]),
+          'current': parseInt(cells[7]),
+          'departure': parseInt(cells[8]),
+          'type': parseInt(cells[9]),
+          'operator': cells[10],
+          'name': cells[11],
+          'speed': parseInt(cells[12]),
+          'acceleration': parseInt(cells[13])
+        };
+      });
+      res.send({vehicles:vehicles});
+    }
   });
 
 });
