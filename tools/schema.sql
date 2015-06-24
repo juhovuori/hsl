@@ -17,3 +17,12 @@ create table vehicles (
   speed integer,
   acceleration integer
 );
+
+drop table if exists omat;
+create table omat (
+  id serial primary key,
+  stop integer,
+  line varchar,
+  time integer, -- time on stop according to schedule in seconds since midnight
+  delta integer -- delta in seconds to schedule based on real vehicle location
+);

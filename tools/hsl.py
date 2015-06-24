@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Usage: hsl.py (-o|-l|-p|-m|-v ID) [--interval=S] [--forever|--repeat=N]
+"""Usage: hsl.py (-o ID|-O ID|-l|-p|-m|-v ID) [--interval=S] [--forever|--repeat=N]
 """
 
 from docopt import docopt
@@ -9,6 +9,7 @@ from conf import version
 from time import sleep
 import client
 import push_client
+import soap_client
 import db
 import output
 
@@ -24,7 +25,11 @@ if __name__ == '__main__':
     while one_more_round():
 
       if arguments['-o']:
-          client.omat_lahdot()
+          omat = soap_client.omat_lahdot(arguments['ID'])
+          print(omat)
+      if arguments['-O']:
+          omat = soap_client.omat_lahdot(arguments['ID'])
+          db.store_omat(omat)
       if arguments['-l']:
           data = client.vehicles()
           output.dump(data)

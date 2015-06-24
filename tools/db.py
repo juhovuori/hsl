@@ -61,25 +61,48 @@ def sql_dict(entry,t):
     }
     return d
 
+def get_time(s):
+    if s is None: return None
+    h = int(s[0:2])
+    m = int(s[3:5])
+    s = int(s[6:8])
+    return h * 60 * 60 + m * 60 + s
+
+def store_omat(entries,t=None):
+    if t is None: t = get_timestamp()
+    t_str = str(t)[:19]
+    print '%s: storing %d entries' % (t_str, len(entries))
+    for entry in entries:
+        time = get_time(entry['time'])
+        rtime = get_time(entry['rtime'])
+        if rtime is None: continue
+        delta = rtime-time
+        d = {
+            'line': entry['line'],
+            'stop': int(entry['stop']),
+            'time': time,
+            'delta': delta
+        }
+        store('omat', d,t)
+
 def store_batch(entries,t=None):
     if t is None: t = get_timestamp()
     t_str = str(t)[:19]
     print '%s: storing %d entries' % (t_str, len(entries))
     for entry in entries:
-        store(entry,t)
+        store('vehicles', sql_dict(entry),t)
 
-def store(entry,t=None):
+def store(table,entry,t=None):
     if t is None: t = get_timestamp()
-    d = sql_dict(entry,t)
     conn = get_conn()
     cur = conn.cursor()
-    cols = [x for x in d.keys() if d[x] != None]
+    cols = [x for x in entry.keys() if entry[x] != None]
     try:
         columns = ",".join(cols)
         value_strings = ["%c(%s)s" % ('%', k) for k in cols]
         values = ",".join(value_strings)
-        tpl = "INSERT INTO vehicles (%s) VALUES (%s)" % (columns, values)
-        cur.execute(tpl, d)
+        tpl = "INSERT INTO %s (%s) VALUES (%s)" % (table, columns, values)
+        cur.execute(tpl, entry)
         conn.commit()
 
     except Exception as e:

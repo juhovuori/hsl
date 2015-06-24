@@ -1,31 +1,8 @@
-from conf import *
+import conf
 from urllib2 import urlopen
 from urllib import urlencode
-from suds.client import Client
 
 import requests
-from suds.transport.http import HttpAuthenticated
-from suds.transport import Reply, TransportError
-
-class RequestsTransport(HttpAuthenticated):
-    def __init__(self, **kwargs):
-        self.cert = kwargs.pop('cert', None)
-        # super won't work because not using new style class
-        HttpAuthenticated.__init__(self, **kwargs)
-
-    def send(self, request):
-        self.addcredentials(request)
-        resp = requests.post(request.url, data=request.message,
-                                     headers=request.headers, cert=self.cert)
-        result = Reply(resp.status_code, resp.headers, resp.content)
-        return result
-
-def omat_lahdot():
-    url = kamo_url
-    print url
-    transport = RequestsTransport(cert='cert')
-    client = Client(url, transport=transport)
-    print client
 
 def vehicles():
     q = urlencode({
@@ -35,7 +12,7 @@ def vehicles():
         "lng1":"23",
         "lng2":"26"
         })
-    response = urlopen(hsl_live_url + "?" + q)
+    response = urlopen(conf.hsl_live_url + "?" + q)
     text = response.read()
     data = [line.rstrip().split(";") for line in text.split("\n") if len(line) > 1]
     return data
@@ -45,7 +22,7 @@ def vehicle(ID):
         "type":"vehicle",
         "id":ID
         })
-    response = urlopen(hsl_live_url + "?" + q)
+    response = urlopen(conf.hsl_live_url + "?" + q)
     data = response.read()
     values = data.rstrip().split(";")
     while len(values) < 10: values.append("")
