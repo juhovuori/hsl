@@ -68,10 +68,10 @@ def get_time(s):
     s = int(s[6:8])
     return h * 60 * 60 + m * 60 + s
 
-def store_omat(entries,t=None):
+def store_omat(entries,t=None, stop_id=None):
     if t is None: t = get_timestamp()
     t_str = str(t)[:19]
-    print '%s: storing %d entries' % (t_str, len(entries))
+    print '%s: storing station %d' % (t_str, stop_id)
     for entry in entries:
         time = get_time(entry['time'])
         rtime = get_time(entry['rtime'])
