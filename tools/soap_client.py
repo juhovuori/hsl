@@ -11,7 +11,6 @@ def omat_lahdot(stop_id):
 
     if client is None:
         client = Client(url)
-    print url
 
     return client.service.getNextDepartures(stop_id)
 
