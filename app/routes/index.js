@@ -12,12 +12,14 @@ router.get('/map', function(req, res) {
   res.render('map', { title: 'Vehicles', mapAccessToken: mapAccessToken });
 });
 
-router.get('/line', function(req, res) {
-  res.render('line', { title: 'Line' });
+router.get('/line/:lineId', function(req, res) {
+  var lineId = req.params.lineId.toUpperCase().replace(/[^0-9A-Z]/,'');
+  res.render('chart', { title: 'Line ' + lineId, lineId: lineId});
 });
 
-router.get('/stop', function(req, res) {
-  res.render('stop', { title: 'Stop' });
+router.get('/stop/:stopId', function(req, res) {
+  var stopId = req.params.stopId.toUpperCase().replace(/[^0-9A-Z]/,'');
+  res.render('chart', { title: 'Stop ' + req.params.stopId, stopId: stopId });
 });
 
 

@@ -77,6 +77,25 @@ function get_stop (stopId, cb) {
   });
 }
 
+function get_lines (cb) {
+  pg.connect(conString, function (err, client, done) {
+    if(err) {
+      done();
+      cb(null, err);
+    } else {
+      var q = 'select distinct line from omat';
+      client.query(q, [], function(err, result) {
+        done();
+        if(err) {
+          cb(null, err);
+        } else {
+          cb(result, null);
+        }
+      });
+    }
+  });
+}
+
 function get_vehicles (cb) {
   pg.connect(conString, function (err, client, done) {
     if(err) {
@@ -119,6 +138,7 @@ function get_routes(cb) {
 exports.get_all = get_all
 exports.get_line = get_line
 exports.get_stop = get_stop
+exports.get_lines = get_lines
 exports.get_routes = get_routes
 exports.get_vehicles = get_vehicles
 

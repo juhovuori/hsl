@@ -2,7 +2,9 @@
   "name": "server",
   "version": "0.0.1",
   "dependencies": {
-    "leaflet": "~0.7.3"
+    "leaflet": "~0.7.3",
+    "nvd3": "~1.8.1",
+    "jquery": "~2.1.4"
   },
   "ignore": [
     "**/.*",

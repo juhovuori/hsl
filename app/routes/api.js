@@ -22,7 +22,7 @@ router.get('/line/:lineId', function(req, res) {
       res.send(err);
     } else {
       //var vehicles = value.rows;
-      res.send({line:value});
+      res.send({data:value});
     }
   });
 });
@@ -34,7 +34,7 @@ router.get('/stop/:stopId', function(req, res) {
       res.send(err);
     } else {
       //var vehicles = value.rows;
-      res.send({stop:value});
+      res.send({data:value});
     }
   });
 });
@@ -89,6 +89,18 @@ router.get('/vehicles_direct', function(req, res) {
 
 });
 
+
+router.get('/lines', function(req, res) {
+  db.get_lines( function (value, err) {
+
+    if (err) {
+      res.send(err);
+    } else {
+      var lines = value.rows.map( function (row) { return row.line; });
+      res.send({lines:lines});
+    }
+  });
+});
 
 router.get('/routes', function(req, res) {
   db.get_routes( function (value, err) {
