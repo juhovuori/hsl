@@ -90,9 +90,19 @@ router.get('/vehicles_direct', function(req, res) {
 });
 
 
+router.get('/stops', function(req, res) {
+  db.get_stops( function (value, err) {
+    if (err) {
+      res.send(err);
+    } else {
+      var stops = value.rows.map( function (row) { return row.stop; });
+      res.send({stops:stops});
+    }
+  });
+});
+
 router.get('/lines', function(req, res) {
   db.get_lines( function (value, err) {
-
     if (err) {
       res.send(err);
     } else {
@@ -104,7 +114,6 @@ router.get('/lines', function(req, res) {
 
 router.get('/routes', function(req, res) {
   db.get_routes( function (value, err) {
-
     if (err) {
       res.send(err);
     } else {

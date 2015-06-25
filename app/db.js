@@ -20,124 +20,61 @@ function process_omat (results) {
 
 }
 
-function get_all (cb) {
+
+function basic_db_call ( query, params, cb, post_process ) {
+
+  if (!post_process) post_process = function (x) { return x; };
+
   pg.connect(conString, function (err, client, done) {
     if(err) {
       done();
       cb(null, err);
     } else {
-      var q = 'select * from omat';
-      client.query(q, function(err, result) {
+      client.query(query, params, function(err, result) {
         done();
         if(err) {
           cb(null, err);
         } else {
-          cb(process_omat(result), null);
+          cb(post_process(result), null);
         }
       });
     }
   });
+
+}
+
+function get_all (cb) {
+  basic_db_call('select * from omat', [], cb, process_omat);
 }
 
 function get_line (lineId, cb) {
-  pg.connect(conString, function (err, client, done) {
-    if(err) {
-      done();
-      cb(null, err);
-    } else {
-      var q = 'select * from omat where line=$1';
-      client.query(q, [lineId], function(err, result) {
-        done();
-        if(err) {
-          cb(null, err);
-        } else {
-          cb(process_omat(result), null);
-        }
-      });
-    }
-  });
+  basic_db_call('select * from omat where line=$1', [lineId], cb, process_omat);
 }
 
 function get_stop (stopId, cb) {
-  pg.connect(conString, function (err, client, done) {
-    if(err) {
-      done();
-      cb(null, err);
-    } else {
-      var q = 'select * from omat where stop=$1';
-      client.query(q, [stopId], function(err, result) {
-        done();
-        if(err) {
-          cb(null, err);
-        } else {
-          cb(process_omat(result), null);
-        }
-      });
-    }
-  });
+  basic_db_call('select * from omat where stop=$1', [stopId], cb, process_omat);
+}
+
+function get_stops (cb) {
+  basic_db_call('select distinct stop from omat', [], cb);
 }
 
 function get_lines (cb) {
-  pg.connect(conString, function (err, client, done) {
-    if(err) {
-      done();
-      cb(null, err);
-    } else {
-      var q = 'select distinct line from omat';
-      client.query(q, [], function(err, result) {
-        done();
-        if(err) {
-          cb(null, err);
-        } else {
-          cb(result, null);
-        }
-      });
-    }
-  });
+  basic_db_call('select distinct line from omat', [], cb);
 }
 
 function get_vehicles (cb) {
-  pg.connect(conString, function (err, client, done) {
-    if(err) {
-      done();
-      cb(null, err);
-    } else {
-      var q = 'select vehicles.* from vehicles, (select max(id) from vehicles, (select distinct vehicle_id from vehicles) as v_id group by vehicles.vehicle_id) as v where vehicles.id=v.max';
-      client.query(q, [], function(err, result) {
-        done();
-        if(err) {
-          cb(null, err);
-        } else {
-          cb(result, null);
-        }
-      });
-    }
-  });
+  basic_db_call('select vehicles.* from vehicles, (select max(id) from vehicles, (select distinct vehicle_id from vehicles) as v_id group by vehicles.vehicle_id) as v where vehicles.id=v.max', [], cb);
 }
 
 function get_routes(cb) {
-  pg.connect(conString, function (err, client, done) {
-    if(err) {
-      done();
-      cb(null, err);
-    } else {
-      var q = 'select distinct route from vehicles';
-      client.query(q, [], function(err, result) {
-        done();
-        if(err) {
-          cb(null, err);
-        } else {
-          cb(result, null);
-        }
-      });
-    }
-  });
-
+  basic_db_call('select distinct route from vehicles', [], cb);
 }
 
 exports.get_all = get_all
 exports.get_line = get_line
 exports.get_stop = get_stop
+exports.get_stops = get_stops
 exports.get_lines = get_lines
 exports.get_routes = get_routes
 exports.get_vehicles = get_vehicles
