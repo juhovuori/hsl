@@ -21,6 +21,7 @@ create table vehicles (
 drop table if exists omat;
 create table omat (
   id serial primary key,
+  timestamp timestamp,
   stop integer,
   line varchar,
   time integer, -- time on stop according to schedule in seconds since midnight

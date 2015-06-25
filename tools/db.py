@@ -79,6 +79,7 @@ def store_omat(entries,t=None, stop_id=None):
         delta = rtime-time
         d = {
             'line': entry['line'],
+            'timestamp': t,
             'stop': int(entry['stop']),
             'time': time,
             'delta': delta
