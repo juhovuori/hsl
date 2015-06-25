@@ -19,7 +19,7 @@ $(document).on('ready', function () {
   $('#map').height($(window).height()-50);
 
   function refresh() {
-    $.get('/vehicles_direct')
+    $.get('/api/vehicles_direct')
       .done(placeVehicles)
       .fail( function(err) { console.log(err); });
   }

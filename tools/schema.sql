@@ -26,3 +26,7 @@ create table omat (
   time integer, -- time on stop according to schedule in seconds since midnight
   delta integer -- delta in seconds to schedule based on real vehicle location
 );
+
+create index omat_stop on omat (stop);
+create index omat_line on omat (line);
+
